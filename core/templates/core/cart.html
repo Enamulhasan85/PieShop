@@ -1,0 +1,151 @@
+{% extends 'core/base/base.html' %}
+
+
+{% block title %}Cart{% endblock %}
+
+
+{% block site_css %}{% endblock %}
+
+
+{% block body %}
+
+<section class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="row gx-4 gx-lg-5">
+            <div class="col-md-8 p-3 bg-light border">
+                <div class="pb-2">
+                    <div class="row">
+                        <div class="col"><h4><b>Shopping Cart</b></h4></div>
+                        <div class="col align-self-center text-end text-muted">{{cartitems}} items</div>
+                    </div>
+                </div>    
+                <hr class="m-0 mb-2"/>
+                {% if cartitems > 0 %}
+                    <form class="" action="." method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% for item in products %}
+                        <div class="row border-bottom py-2 mx-2" id="{{item.item.slug}}">
+                            <div class="row align-items-center">
+                                <div class="d-flex col-2"><img class="rounded mx-auto" src="{{ item.item.image.url }}" height="60px" width="70px"></div>
+                                <div class="col">
+                                    <div class="text-muted">{{ item.item.category }}</div>
+                                    <div class="">{{ item.item.title }}</div>
+                                </div>
+                                <div class="col">
+                                    <div class="d-flex">
+                                        <input name="{{ item.item.slug }}" class="form-control text-center ms-auto {{ item.item.slug }}" onchange="change(this)" id="inputQuantity" type="number" value="{{ item.quantity }}" min="0" style="max-width: 4rem" />
+                                    </div>
+                                </div>
+                                <div class="col text-end productprice">
+                                    <span class="itemprice" hidden>{{item.item.price}}</span>
+                                    <span class="itemdiscount_price" hidden>{{item.item.discount_price}}</span>
+                                    {% if item.item.discount_price %}
+                                        <div class="fw-bold">$<span class="discount_price">{{item.get_final_price}}</span></div>
+                                        <div class="text-danger text-decoration-line-through">$<span class="price">{{item.get_total_item_price}}</span></div>
+                                    {% else %}
+                                    <div class="fw-bold">$<span class="price">{{item.get_final_price}}</span></div>
+                                    <div class="fw-bold " hidden>0</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-2 d-flex">
+                                    <button type="button" onclick="remove(this);" class="btn btn-danger ms-auto">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="row py-2 fs-5 fw-bold mx-2">
+                            <div class="row align-items-center">
+                                <div class="d-flex col-2"></div>
+                                <div class="col">
+                                    <div class="">Total:</div>
+                                </div>
+                                <div class="col">
+                                </div>
+                                <div class="col text-end totalprice">
+                                    {{totalprice}}
+                                </div>
+                                <div class="col-2 d-flex">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="py-3 d-flex justify-content-center">
+                            <button type="submit" class="btn btn-warning mx-2" >Update</button>
+                            <a href="/home/" class="btn btn-primary mx-2" >Back to shop</a>
+                        </div>
+                    </form>
+                {% else %}
+                    <div class="fs-4 py-3 badge bg-danger">
+                        Your cart is empty
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 bg-light border">
+                    <div class=""><h5><b>Summary</b></h5></div>
+                    <hr>
+                    <div class="d-flex pb-2 px-2">
+                        <div class="col">Subtotal</div>
+                        <div class="col text-end">{{totalprice}}</div>
+                    </div>
+                    <div class="d-flex py-2 px-2" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+                        <div class="col">Shipping</div>
+                        {% if cartitems > 0 %}
+                            <div class="col text-end">50.0</div>
+                        {% else %}
+                            <div class="col text-end">0.0</div>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex py-2 px-2 fw-bold" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+                        <div class="col">Total</div>
+                        {% if cartitems > 0 %}
+                            <div class="col text-end">{{total}}</div>
+                        {% else %}
+                            <div class="col text-end">0.0</div>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex py-3">
+                        <a class="btn btn-success mx-auto" id="placeorder" href="/shipping/" >Checkout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block site_js %}
+    <script>
+        function remove(obj, slug){
+            $(obj).parent().parent().parent().remove();
+
+            var disprice = parseFloat($(obj).parent().parent().parent().find(".itemdiscount_price").text());
+
+            if(isNaN(disprice)) var itemprice = parseFloat($(obj).parent().parent().parent().find(".price").text());
+            else var itemprice = parseFloat($(obj).parent().parent().parent().find(".discount_price").text());
+
+            $(".totalprice").text(parseFloat($(".totalprice").text()) - itemprice + ".0");
+
+            $('#placeorder').prop("disabled",true);
+        }
+
+        function change(obj){
+            //console.log(obj.val());
+            var disprice = parseFloat($(obj).parent().parent().parent().find(".itemdiscount_price").text());
+            var price = parseFloat($(obj).parent().parent().parent().find(".itemprice").text());
+
+            if(isNaN(disprice)) var itemprice = price*$(obj).val() - parseFloat($(obj).parent().parent().parent().find(".price").text());
+            else var itemprice = disprice*$(obj).val() - parseFloat($(obj).parent().parent().parent().find(".discount_price").text());
+
+            $(obj).parent().parent().parent().find(".discount_price").text(disprice*$(obj).val()+".0");
+            $(obj).parent().parent().parent().find(".price").text(price*$(obj).val()+".0");
+
+            console.log(itemprice);
+
+            $(".totalprice").text(parseFloat($(".totalprice").text()) + itemprice + ".0");
+            $('#placeorder').prop("disabled",true);
+        }
+    </script>
+{% endblock %}
