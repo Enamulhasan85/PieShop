@@ -1,0 +1,115 @@
+{% extends 'core/base/base.html' %}
+
+
+{% block title %}Track Order{% endblock %}
+
+
+{% block site_css %}{% endblock %}
+
+
+{% block body %}
+
+<section class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="row gx-4 gx-lg-5 mb-3">
+            <div class="col-md-8 p-3 bg-light border">
+                <div class="pb-2">
+                    <div class="row">
+                        <div class="col-4">
+                            <h4><b>Ordered Products</b></h4>
+                        </div>
+                        <div class="col align-self-center text-muted text-start badge">Ordered: {{order.start_date}}</div>
+                        {% if order.status == 'DELIVERED' %}
+                            <div class="col align-self-center text-muted text-start badge">Received: {{order.orderreceived_date}}</div>
+                        {% endif %}
+                        <div class="col align-self-center text-end text-muted">{{ordercount}} items</div>
+                    </div>
+                </div>    
+                {% for item in orderproducts %}
+                <div class="row border-top py-2" id="{{item.item.slug}}">
+                    <div class="row main align-items-center">
+                        <div class="d-flex col-2"><img class="rounded mx-auto" src="{{ item.item.image.url }}" height="60px" width="70px"></div>
+                        <div class="col">
+                            <div class="text-muted">{{ item.item.category }}</div>
+                            <div class="">{{ item.item.title }}</div>
+                        </div>
+                        <div class="col">
+                            <div class="d-flex justify-content-center">
+                                <span class="px-3 py-2 bg-dark text-white rounded">{{item.quantity}}</span>
+                            </div>
+                        </div>
+                        <div class="col text-end productprice">
+                            <span class="itemprice" hidden>{{item.item.price}}</span>
+                            <span class="itemdiscount_price" hidden>{{item.item.discount_price}}</span>
+                            {% if item.item.discount_price %}
+                                <div class="fw-bold">$<span class="discount_price">{{item.get_final_price}}</span></div>
+                                <div class="text-danger text-decoration-line-through">$<span class="price">{{item.get_total_item_price}}</span></div>
+                            {% else %}
+                                <div class="fw-bold">$<span class="price">{{item.get_final_price}}</span></div>
+                                <div class="fw-bold " hidden>0</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="row border-top py-2 fs-5 fw-bold">
+                    <div class="row main align-items-center">
+                        <div class="d-flex col-2"></div>
+                        <div class="col">
+                        </div>
+                        <div class="col">
+                            <div class="text-center">Total:</div>
+                        </div>
+                        <div class="col text-end totalprice">
+                            {{totalprice}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 bg-light border">
+                    <div class="d-flex">
+                        <h5><b>Summary</b></h5>
+                        {% if order.status == 'DELIVERED' %}
+                            <span class="badge bg-success p-2 me-2 rounded-pill m-auto">{{order.status}}</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark p-2 me-2 rounded-pill m-auto">{{order.status}}</span>
+                        {% endif %}
+                    </div>
+                    <hr class="m-0 mt-2 mb-3">
+                    <div class="d-flex pb-3 px-2">
+                        <div class="col">Name:</div>
+                        <div class="col text-end">{{order.name}}</div>
+                    </div>
+                    <div class="d-flex pb-3 px-2">
+                        <div class="col">Phone:</div>
+                        <div class="col text-end">{{order.phone}}</div>
+                    </div>
+                    <div class="d-flex pb-3 px-2">
+                        <div class="col-3">Address:</div>
+                        <div class="col text-end">{{order.shipping_address}}</div>
+                    </div>
+                    <div class="d-flex pb-3 px-2">
+                        <div class="col">Subtotal</div>
+                        <div class="col text-end">{{totalprice}}</div>
+                    </div>
+                    <div class="d-flex py-3 px-2" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+                        <div class="col">Shipping</div>
+                        <div class="col text-end">50.00</div>
+                    </div>
+                    <div class="d-flex py-3 px-2 fw-bold" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+                        <div class="col">Total</div>
+                        <div class="col text-end">{{total}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block site_js %}
+    <script>
+    </script>
+{% endblock %}

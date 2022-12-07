@@ -1,0 +1,122 @@
+{% extends 'core/base/base.html' %}
+
+
+{% block title %}Orders{% endblock %}
+
+
+{% block site_css %}{% endblock %}
+
+
+{% block body %}
+
+<section class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="row gx-4 gx-lg-5 mb-3">
+            <div class="col-md-8 mx-auto">
+                <section class="p-4 border rounded"> 
+                    <div class="d-flex justify-content-between align-items-center"> 
+                        <div class=""> 
+                            <h4 class="m-0">My Orders</h4>  
+                        </div> 
+                        <div class=""> 
+                            <p class="m-0">Your Total Order: {{ordercount}}</p> 
+                        </div> 
+                    </div> 
+                </section>
+                <div class="p-3 border rounded my-2">
+                    {% for order in orders %}
+                        <div class="py-2">
+                            <div class="d-flex mb-3"> 
+                                <p class="fs-5 m-0"> Your Order ID: 
+                                    <span class="text-success">{{order.order.ref_code}}</span>
+                                </p> 
+                                <div class="px-3 align-self-center text-muted text-start badge">Ordered: {{order.order.start_date}}</div>
+                                {% if order.order.status == 'DELIVERED' %}
+                                <div class="px-3 align-self-center text-muted text-start badge">Received: {{order.order.orderreceived_date}}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="status d-flex justify-content-between"> 
+                                {% if order.order.status == 'CANCELLED' %}
+                                    <button href="{% url 'trackorder' order.order.ref_code %}" class="btn btn-primary" disabled>Track Order</button>
+                                    <span class="badge bg-danger text-white p-2 me-2 rounded-pill m-auto">{{order.order.status}}</span>
+                                {% elif order.order.status == 'DELIVERED' %}
+                                    <a href="{% url 'trackorder' order.order.ref_code %}" class="btn btn-primary me-2">Track Order</a>
+                                    <span class="badge bg-success text-white p-2 me-2 rounded-pill m-auto">{{order.order.status}}</span>
+                                {% else %}
+                                    <div class="d-flex">
+                                        <a href="{% url 'trackorder' order.order.ref_code %}" class="btn btn-primary me-2">Track Order</a>
+                                        <form class="" action="cancelorder/" method="POST" enctype="multipart/form-data" onsubmit="return confirm('Do you really want to cancel the order?');">
+                                        {% csrf_token %}
+                                            <input type="text" name="ref_code" hidden value="{{order.order.ref_code}}">
+                                            <button type="submit" class="btn btn-danger">Cancel Order</button>
+                                        </form>
+                                    </div>
+                                    <span class="badge bg-warning text-dark p-2 me-2 rounded-pill m-auto">{{order.order.status}}</span> 
+                                {% endif %}
+                            </div>
+                            <div class="py-4"> 
+                                <div class="d-flex flex-wrap"> 
+                                    {% for item in order.products %}
+                                    <div class="col-sm-3">
+                                        <div class="card mx-2">
+                                            <!-- Sale badge-->
+                                            {% if item.item.discount_price %}
+                                                <div class="badge bg-warning text-dark position-absolute" style="top: 0.5rem; right: 0.5rem">Discount</div>
+                                            {% endif %}
+                                            <!-- Product image-->
+                                            <img class="card-img-top" src="{{ item.item.image.url }}" alt="{{item.item.title}}" height="120px"/>
+                                            <!-- Product details-->
+                                            <div class="card-body p-2">
+                                                <div class="text-center">
+                                                    <!-- Product name-->
+                                                    <h5 class="">{{item.item.title}}</h5>
+                                                    <!-- Product price-->
+                                                    {% if item.item.discount_price %}
+                                                        <span class="text-muted text-decoration-line-through">${{item.item.price}}</span>
+                                                        ${{item.item.discount_price}}
+                                                    {% else %}
+                                                        ${{item.item.price}}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <!-- Product actions-->
+                                            <div class="card-footer p-2 pt-0 border-top-0 bg-transparent">
+                                                <div class="text-center">
+                                                    <a class="btn btn-outline-dark mt-auto btn-sm" target="_blank" href="{% url 'product' item.item.slug %}">View</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--<div class="col-3"> 
+                                        <a href="/product/239846" class="text-dark"> 
+                                            <div class="my-account-book"> 
+                                                <figure class="my-account-book__img"> 
+                                                    <img src="" alt="কুরআনের শব্দাবলি (লেভেল - ১)"> 
+                                                </figure> 
+                                                <p class="my-account-book__title text-center">কুরআনের শব্দাবলি (লেভেল - ১)</p> 
+                                                <div class="my-account-book__price mb-4"> 
+                                                    <p class="text-center"> TK. 120 </p> 
+                                                </div> 
+                                            </div> 
+                                        </a> 
+                                    </div> 
+                                -->
+                                    {% endfor %}
+                                </div> 
+                            </div>
+                        </div>
+                        <hr class="m-0 mb-3"/>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block site_js %}
+    <script>
+    </script>
+{% endblock %}

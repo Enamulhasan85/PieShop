@@ -35,7 +35,7 @@
                     <div class="row justify-content-center align-items-end py-2">
                         <div class="form-group col-sm-9">
                             <label class="form-label" for="seladdress"><b>Shipping Address:</b></label>
-                            <select class="form-select" name="seladdress" id="seladdress">
+                            <select class="form-select" name="seladdress" id="seladdress" required>
                                 {% for item in addresses%}
                                     <option value="{{item.id}}">{{item}}</option>
                                 {% endfor %}
@@ -75,9 +75,13 @@
                                     </div>
                                 </div>
                                 <div class="row justify-content-center align-items-center py-2">
-                                    <div class="form-group">
-                                        <label class="form-label" for="address"><b>Address:</b></label>
-                                        <input class="form-control" type="text" name="address" maxlength="200" required="" id="address">
+                                    <div class="form-group col-sm-6">
+                                        <label class="form-label" for="area"><b>Area:</b></label>
+                                        <input class="form-control" type="text" name="area" maxlength="200" required="" id="area">
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label class="form-label" for="streetaddress"><b>Street Address:</b></label>
+                                        <input class="form-control" type="text" name="streetaddress" maxlength="200" required="" id="streetaddress">
                                     </div>
                                 </div>
                             </div>
@@ -104,6 +108,9 @@
                     <div class="d-flex py-3 px-2 fw-bold" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
                         <div class="col">Total</div>
                         <div class="col text-end">{{total}}</div>
+                    </div>
+                    <div class="text-warning bg-dark p-2" style="font-size: .75rem;">
+                        **Pay after you've got your order. (Only Cash On Delivery)
                     </div>
                 </div>
             </div>

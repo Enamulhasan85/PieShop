@@ -13,11 +13,12 @@ ADDRESS_CHOICES = (
 )
 
 STATUS = (
-    ('ORDERED', 'Ordered'),
-    ('PROCESSING', 'Processing'),
-    ('PACKING', 'Packing'),
-    ('SHIPPING', 'Shipping'),
     ('RECEIVED', 'Received'),
+    ('APPROVED', 'Approved'),
+    ('PROCESSING', 'Processing'),
+    ('SHIPPED', 'Shipped'),
+    ('DELIVERED', 'Delivered'),
+    ('CANCELLED', 'Cancelled'),
 )
 
 GENDER = (
@@ -101,10 +102,9 @@ class Order(models.Model):
     ref_code = models.CharField(max_length=20, blank=True, null=True)
     name = models.CharField(max_length=400, blank=True)
     phone = PhoneNumberField(blank=True)
-    start_date = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateTimeField()
     orderreceived_date = models.DateTimeField(blank=True, null=True)
-    shipping_address = models.ForeignKey(
-        'Address', related_name='shipping_address', on_delete=models.SET_NULL, blank=True, null=True)
+    shipping_address = models.CharField(max_length=400, blank=True)
     payment = models.ForeignKey(
         'Payment', on_delete=models.SET_NULL, blank=True, null=True)
     status = models.CharField(choices=STATUS, max_length=20)
@@ -159,11 +159,12 @@ class Address(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     street_address = models.CharField(max_length=100)
+    area = models.CharField(max_length=100, blank=True)
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"{self.street_address}, {self.city}, {self.country}"
+        return f"{self.street_address}, {self.area}, {self.city}, {self.country}"
 
     class Meta:
         verbose_name_plural = 'Addresses'
@@ -174,6 +175,6 @@ class Payment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.SET_NULL, blank=True, null=True)
     amount = models.FloatField()
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField()
     def __str__(self):
         return f'{self.user.username} - {self.timestamp.strftime("%Y-%m-%d %H:%M:%S")}'

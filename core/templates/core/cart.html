@@ -31,6 +31,15 @@
                                     <div class="text-muted">{{ item.item.category }}</div>
                                     <div class="">{{ item.item.title }}</div>
                                 </div>
+                                <div class="col text-end">
+                                    {% if item.item.discount_price %}
+                                        <div class="fw-bold"><span class="">{{item.item.discount_price}}</span></div>
+                                        <div class="text-danger text-decoration-line-through"><span class="">{{item.item.price}}</span></div>
+                                    {% else %}
+                                        <div class="fw-bold"><span class="">{{item.item.price}}</span></div>
+                                        <div class="fw-bold " hidden>0</div>
+                                    {% endif %}
+                                </div>
                                 <div class="col">
                                     <div class="d-flex">
                                         <input name="{{ item.item.slug }}" class="form-control text-center ms-auto {{ item.item.slug }}" onchange="change(this)" id="inputQuantity" type="number" value="{{ item.quantity }}" min="0" style="max-width: 4rem" />
@@ -43,8 +52,8 @@
                                         <div class="fw-bold">$<span class="discount_price">{{item.get_final_price}}</span></div>
                                         <div class="text-danger text-decoration-line-through">$<span class="price">{{item.get_total_item_price}}</span></div>
                                     {% else %}
-                                    <div class="fw-bold">$<span class="price">{{item.get_final_price}}</span></div>
-                                    <div class="fw-bold " hidden>0</div>
+                                        <div class="fw-bold">$<span class="price">{{item.get_final_price}}</span></div>
+                                        <div class="fw-bold " hidden>0</div>
                                     {% endif %}
                                 </div>
                                 <div class="col-2 d-flex">
