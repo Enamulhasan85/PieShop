@@ -26,13 +26,13 @@
                 <div class="p-3 border rounded my-2">
                     {% for order in orders %}
                         <div class="py-2">
-                            <div class="d-flex mb-3"> 
+                            <div class="d-flex flex-wrap justify-content-between mb-3"> 
                                 <p class="fs-5 m-0"> Your Order ID: 
                                     <span class="text-success">{{order.order.ref_code}}</span>
                                 </p> 
-                                <div class="px-3 align-self-center text-muted text-start badge">Ordered: {{order.order.start_date}}</div>
+                                <div class="px-0 align-self-center text-muted text-start badge">Ordered: {{order.order.start_date}}</div>
                                 {% if order.order.status == 'DELIVERED' %}
-                                <div class="px-3 align-self-center text-muted text-start badge">Received: {{order.order.orderreceived_date}}</div>
+                                <div class="px-0 align-self-center text-muted text-start badge">Received: {{order.order.orderreceived_date}}</div>
                                 {% endif %}
                             </div>
 
@@ -88,20 +88,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!--<div class="col-3"> 
-                                        <a href="/product/239846" class="text-dark"> 
-                                            <div class="my-account-book"> 
-                                                <figure class="my-account-book__img"> 
-                                                    <img src="" alt="কুরআনের শব্দাবলি (লেভেল - ১)"> 
-                                                </figure> 
-                                                <p class="my-account-book__title text-center">কুরআনের শব্দাবলি (লেভেল - ১)</p> 
-                                                <div class="my-account-book__price mb-4"> 
-                                                    <p class="text-center"> TK. 120 </p> 
-                                                </div> 
-                                            </div> 
-                                        </a> 
-                                    </div> 
-                                -->
                                     {% endfor %}
                                 </div> 
                             </div>

@@ -10,26 +10,31 @@
 {% block body %}
 
     <!-- Header-->
-    <header class="bg-dark py-5">
-        <div class="container px-4 px-lg-5 my-5">
+    <header class="masthead" style="position: relative; background-color: #343a40;
+    background: url(../static/core/images/bg.jpg) no-repeat center center; background-size: cover;
+    padding-top: 4rem; padding-bottom: 4rem;">
+        <div class="col-9 col-sm-6 px-4 py-3 px-lg-5 my-5 mx-auto" style="background-color: #00706bcf;">
             <div class="text-center text-white">
-                <h1 class="display-4 fw-bolder">Shop in style</h1>
-                <p class="lead fw-normal text-white-50 mb-0">With this shop hompeage template</p>
+                <h1 class="display-4 fw-bolder">Shop in PieShop</h1>
+                <p class="lead fs-4 fw-normal mb-0">Largest online books & stationary items store</p>
             </div>
         </div>
     </header>
     
     <!-- Section-->
     <section class="py-5">
+        <h2 class="text-center display-6 fw-bolder" id="allproducts">All Items</h2>
         <div class="container px-4 px-lg-5 mt-5">
             {% for list in product %}
             <h3 class="border-start border-2 border-dark px-2 my-4">{{ list.category }}</h3>
-            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
                 {% for item in list.products %}
-                    <div class="col mb-4">
+                    <div class="col-sm-3 col-md-4 mb-4">
                         <div class="card h-100">
-                            <!-- Sale badge-->
-                            {% if item.discount_price %}
+                            <!-- Sale badge--> 
+                            {% if item.quantity == 0 %}
+                                <div class="badge bg-danger position-absolute" style="top: 0.5rem; right: 0.5rem">Out of Stock</div>
+                            {% elif item.discount_price %}
                                 <div class="badge bg-warning text-dark position-absolute" style="top: 0.5rem; right: 0.5rem">Discount</div>
                             {% endif %}                            <!-- Product image-->
                             <img class="card-img-top" src="{{ item.image.url }}" alt="{{item.title}}" height="180px"/>
@@ -70,113 +75,45 @@
         </div>
     </section>
 
-    <section class="py-5">
-        <div class="container px-4 px-lg-5 mt-5">
-            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                <div class="col mb-5">
-                    <div class="card h-100">
-                        <!-- Product image-->
-                        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                        <!-- Product details-->
-                        <div class="card-body p-4">
-                            <div class="text-center">
-                                <!-- Product name-->
-                                <h5 class="fw-bolder">Fancy Product</h5>
-                                <!-- Product price-->
-                                $40.00 - $80.00
+    <main>
+        <section id="feedback" class="feedback text-white">
+            <div class="section-title">
+                <h3 class="text-center">Feedback</h3>
+            </div>
+
+            <div class="">
+                <div class="container">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true" data-bs-interval="2000">
+                        <div class="carousel-indicators">
+                          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active" data-bs-interval="2000">
+                                <p>What an amazing little bookstore. Very friendly. I found my new bookstore. Their prices are fantastic too.I’m very impressed.</p>
+                                <img class="feedback-img rounded-circle mb-3" src="/files/images/fuad.jpg" alt=""/>
+                                <h6>Fuad Khan</h6>
+                            </div>
+                            <div class="carousel-item" data-bs-interval="2000">
+                                <p>Excellent service.reasonable price.they are offering great opportunity to enhance knowledge.</p>
+                                <img class="feedback-img rounded-circle mb-3" src="/files/images/bodrul.jpg" alt=""/>
+                                <h6>Bodrul Islam</h6>
                             </div>
                         </div>
-                        <!-- Product actions-->
-                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">View options</a></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col mb-5">
-                    <div class="card h-100">
-                        <!-- Sale badge-->
-                        <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                        <!-- Product image-->
-                        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                        <!-- Product details-->
-                        <div class="card-body p-4">
-                            <div class="text-center">
-                                <!-- Product name-->
-                                <h5 class="fw-bolder">Sale Item</h5>
-                                <!-- Product price-->
-                                <span class="text-muted text-decoration-line-through">$50.00</span>
-                                $25.00
-                            </div>
-                        </div>
-                        <!-- Product actions-->
-                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col mb-5">
-                    <div class="card h-100">
-                        <!-- Sale badge-->
-                        <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                        <!-- Product image-->
-                        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                        <!-- Product details-->
-                        <div class="card-body p-4">
-                            <div class="text-center">
-                                <!-- Product name-->
-                                <h5 class="fw-bolder">Special Item</h5>
-                                <!-- Product reviews-->
-                                <div class="d-flex justify-content-center small text-warning mb-2">
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                </div>
-                                <!-- Product price-->
-                                <span class="text-muted text-decoration-line-through">$20.00</span>
-                                $18.00
-                            </div>
-                        </div>
-                        <!-- Product actions-->
-                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col mb-5">
-                    <div class="card h-100">
-                        <!-- Product image-->
-                        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                        <!-- Product details-->
-                        <div class="card-body p-4">
-                            <div class="text-center">
-                                <!-- Product name-->
-                                <h5 class="fw-bolder">Popular Item</h5>
-                                <!-- Product reviews-->
-                                <div class="d-flex justify-content-center small text-warning mb-2">
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                </div>
-                                <!-- Product price-->
-                                $40.00
-                            </div>
-                        </div>
-                        <!-- Product actions-->
-                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                        </div>
-                    </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Next</span>
+                        </button>
+                      </div>
                 </div>
             </div>
-        </div>
-    </section>
-
+        </section>
+        <!-- feedback section ends -->
+    </main>
 
 {% endblock %}
 

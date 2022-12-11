@@ -1,0 +1,172 @@
+
+
+/* header ends */
+
+/* banner starts*/
+#banner-section{
+    background-image: url(images/background.jpg);
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.banner-contents{
+    padding: 50px 10px;
+    text-align: center;
+}
+
+.banner-contents h1{
+    width: 100%;
+    margin: 15px auto;
+    font-size: 3rem;
+    background: rgba(161, 4, 25, 0.486);
+    color: white;
+    border-radius: 15px;
+    font-family: 'Handlee', cursive;
+
+}
+
+.banner-contents p{
+    width: 50%;
+    margin: 15px auto;
+    background: rgba(18, 201, 12, 0.486);
+    padding: 20px;
+    font-size: 2rem;
+    font-family: 'Satisfy', cursive;
+    transition: .5s;
+    border-radius: 15px;
+}
+
+.banner-contents p:hover{
+    transform: scale(1.1);
+}
+
+#feedback{
+    background: #0d0442;
+    padding: 7% 10%;
+}
+
+.carousel-item{
+    padding: 5% 15%;
+    text-align: center;
+    font-style: italic;
+}
+
+.feedback-img{
+    width: 120px;
+    height: auto;
+}
+
+.carousel-indicators{
+    bottom: -20px;
+}
+/* feedback ends */
+
+/* footer section starts */
+.foot h4{
+    position: relative;
+    color: white;
+    text-decoration: none;
+    font-size: 24px;
+    letter-spacing: 0.5px;
+
+}
+.foot h4::after{
+    content: "";
+    position: absolute;
+    background-color: #ff3c78;
+    height:3px;
+    width: 0;
+    left: 0;
+    bottom: -5px;
+    transition: 0.3s;
+
+}
+.foot h4:hover::after{
+    width: 50%;
+}    
+.foot ul li a{
+    color: rgb(34, 110, 161);
+    text-decoration: none;
+    font-size: 14px;
+    transition: o.3s;
+}
+.foot ul li a:hover{
+    transform: scale(1.2);
+    color: white;
+}
+.foot2 ul li{
+    margin: 5px 12px;
+}
+.foot2 ul li a{
+    position: relative;
+    display: block;
+    width: 60px;
+    height: 60px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 50%;
+    background: rgba(27, 12, 112, 0.349);
+}
+.foot2 ul li a::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgb(29, 30, 105);
+    transition: 0.5s;
+    transform: scale(.9);
+    z-index: -1;
+}
+.foot2 ul li a:hover::before{
+    transform: scale(1);
+    box-shadow: 0 0 5px rgb(255, 255, 255);
+}
+.foot2 ul li a:hover{
+    color: rgb(255, 255, 255);
+    box-shadow: 0 0 15px rgb(255, 254, 254);
+    text-shadow: 0 0 0 rgb(255, 255, 255);
+}
+/* footer bg-color starts */
+.footer .container{
+    background: rgb(2,0,36);
+}
+/* footer bg-color ends */
+/* footer section ends */
+
+
+/* large devices (portrait tablets and large phones, 992px and up) */
+@media (min-width: 992px){
+    
+    .logo-div{
+        text-align: left;
+    }
+    .logo-div p{
+        margin-left: 18px;
+    }
+    /* banner start */
+    #banner-section{
+        position: relative;
+        height: 100vh;
+    }
+    .banner-contents{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+    }
+    .banner-contents h1{
+        width: 1500px;
+        padding: 60px;
+        margin: 50px auto;
+        font-size: 3.4rem;
+    }
+    .banner-contents p{
+        padding: 90px;
+        font-size: 2.5rem;
+    }
+}
+

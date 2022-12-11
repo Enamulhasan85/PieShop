@@ -13,12 +13,17 @@
             <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         -->
         <!-- Bootstrap icons-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Sans&family=Handlee&family=Montserrat&family=Roboto&family=Satisfy&display=swap" rel="stylesheet">
+    
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
         <!-- Google fonts-->
         <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <link href="{% static 'core/css/base.css' %}" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+        <link href="{% static 'core/base.css' %}" rel="stylesheet" />
         {% block site_css %}{% endblock %}
     </head>
     <body>
@@ -33,32 +38,40 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#!">All Products</a></li>
+                                <li><a class="dropdown-item" href="/home/#allproducts">All Products</a></li>
                                 <li><hr class="dropdown-divider" /></li>
-                                <li><a class="dropdown-item" href="#!">Popular Items</a></li>
-                                <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
+                                <li><a class="dropdown-item" href="/home/#allproducts">Popular Items</a></li>
+                                <li><a class="dropdown-item" href="/home/#feedback">Feedback</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Contact Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#footer">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#footer">Contact Us</a></li>
                     </ul>
-                    <form class="d-flex">
+                    <form class="d-flex mx-1">
                         <a class="btn btn-warning" type="submit" href="/cart/" target="_blank">
                             <i class="bi-cart-fill me-1"></i>
                             Cart
                             <span class="badge bg-dark text-white ms-1 rounded-pill">{{cartitems}}</span>
                         </a>
                     </form>
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">@{{user.username}}</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="/profile/">My Profile</a></li>
-                                <li><a class="dropdown-item" href="/order/">My Orders</a></li>
-                                <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+
+                    {% if user.is_authenticated %}
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">@{{user.username}}</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="/profile/">My Profile</a></li>
+                                    <li><a class="dropdown-item" href="/order/">My Orders</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    {% else %}
+                        <form class="d-flex justify-content-center ">
+                            <a class="btn btn-success mx-1" href="/login/">Log In</a>
+                            <a class="btn btn-primary mx-1" href="/register/">Sign Up</a>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         </nav>
@@ -67,9 +80,82 @@
 
  
         <!-- Footer-->
-        <footer class="py-5 bg-dark">
-            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2022</p></div>
-        </footer>
+        <div class="" id="footer">
+            <footer class="" style="background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 36%, rgba(0,212,255,1) 100%)!important;">
+                <div class="container text-white p-3 text-white">
+                    <div class="row">
+                        <div class="foot col-lg-2 col-md-2 col-sm-6">
+                            <h4>Company</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Our Services</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Affiliate Program</a></li>
+                            </ul>
+                        </div>
+                        <div class="foot col-lg-2 col-md-2 col-sm-6">
+                            <h4>Products</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="#">Brands</a></li>
+                                <li><a href="#">Authors</a></li>
+                                <li><a href="#">Publishers</a></li>
+                                <li><a href="#">List</a></li>
+                                <li><a href="#">Reviews</a></li>
+                            </ul>
+                        </div> 
+                        <div class="foot col-lg-2 col-md-2 col-sm-6">
+                            <h4>Shop by</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="#">Book Category</a></li>
+                                <li><a href="#">Boi Mela 2022</a></li>
+                                <li><a href="#">Islamic Book</a></li>
+                                <li><a href="#">Pre Order</a></li>
+                                <li><a href="#">best Selling</a></li>
+                                <li><a href="#">Extra Discount</a></li>
+                            </ul>
+                        </div>
+                        <div class="foot col-lg-2 col-md-2 col-sm-6">
+                            <h4>Support</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="#">Order Track</a></li>
+                                <li><a href="#">Find My Product</a></li>
+                                <li><a href="#">Guide</a></li>
+                                <li><a href="#">FAQ</a></li>
+                                <li><a href="#">FAQ-Happy Return</a></li>
+                                <li><a href="#">Help Desk</a></li>
+                                <li><a href="#">Writer/Publisher Request</a></li>
+                                <li><a href="#">Retailer Request</a></li>
+                            </ul>
+                        </div>
+                        <div class=" foot foot2 col-lg-4 col-md-4 col-sm-6">
+                            <h4>Follow Us</h4>
+                            <table border="0" class="pt-3">
+                                <tr>
+                                    <th width="10%"><i class="fa fa-phone" aria-hidden="true"></i></th>
+                                    <td> +880-1779936422, +880-1316223272</td>
+                                </tr>
+                                <tr>
+                                    <th width="10%"><i class="fa fa-envelope" aria-hidden="true"></i></th>
+                                    <td> contact_pieshop@gmail.com, info_pieshop@gmail.com</td>
+                                </tr>
+                                <tr>
+                                    <th width="10%"><i class="fa fa-map-marker" aria-hidden="true"></i></th>
+                                    <td> Gulshan Avenue, Gulshan-1, Dhaka-1212, Bangladesh</td>
+                                </tr>
+                            </table>
+                            <ul class="social-icons nav justify-content-right mt-3">
+                                <li class="nav-item"><a class="nav-link social link" href="#"><i class="fab fa-facebook fa-2x mt-2" style="color: #5787e9" aria-hidden="true"></i></a></li>
+                                <li class="nav-item"><a class="nav-link social link" href="#"><i class="fab fa-twitter fa-2x mt-2" style="color: #1DA1F2" aria-hidden="true"></i></a></li>
+                                <li class="nav-item"><a class="nav-link social link" href="#"><i class="fab fa-instagram fa-2x mt-2" style="color: #7a09fc" aria-hidden="true"></i></a></li>
+                                <li class="nav-item"><a class="nav-link social link" href="#"><i class="fab fa-whatsapp fa-2x mt-2" style="color: #25D366" aria-hidden="true"></i></a></li>    
+                                <li class="nav-item"><a class="nav-link social link" href="#"><i class="fab fa-facebook-messenger fa-2x mt-2" style="color: #00B2FF" aria-hidden="true"></i></a></li>    
+                                <li class="nav-item"><a class="nav-link social link" href="#"><i class="fa-brands fa-snapchat fa-2x mt-2" style="color: #FFFC00" aria-hidden="true"></i></a></li>    
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->

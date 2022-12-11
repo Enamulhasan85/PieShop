@@ -14,7 +14,6 @@ import random
 import string
 
 # Create your views here.
-@login_required(login_url='login')
 def home(request):
     categorylist = []
     for category in Category.objects.all():
@@ -24,7 +23,11 @@ def home(request):
             'category': category.name,
             'products': Product.objects.filter(category=category)
         })
-    cartitems = Cart.objects.filter(user=request.user).count()
+    
+    cartitems = 0
+    if request.user.is_authenticated:
+        cartitems = Cart.objects.filter(user=request.user).count()
+
     return render(request, 'home\index.html',{
         'product': categorylist,
         'cartitems': cartitems
@@ -79,26 +82,35 @@ def registerpage(request):
 @login_required(login_url='login')
 def addcart(request, slug):
     product = Product.objects.get(slug=slug)
+    if product.quantity == 0:
+        return redirect('home')
     cartitem, notcreated = Cart.objects.get_or_create(item=product, user=request.user)
     if notcreated == False: 
         cartitem.quantity = cartitem.quantity + 1
     cartitem.save()
-
+    product.quantity -= 1
+    product.save()
     return redirect("home")
 
 
-@login_required(login_url='login')
 def product(request, slug):
     product = Product.objects.get(slug=slug)
     if request.method == 'POST' and request.POST.get("quantity"):
+        if request.user.is_authenticated == False:
+            return redirect("login")
+        qty = min(product.quantity, int(request.POST.get("quantity")))
         cartitem, notcreated = Cart.objects.get_or_create(item=product, user=request.user)
         if notcreated == False: 
-            cartitem.quantity = cartitem.quantity + int(request.POST.get("quantity"))
+            cartitem.quantity = cartitem.quantity + qty
         else:
-            cartitem.quantity = request.POST.get("quantity")
+            cartitem.quantity = qty
         cartitem.save()
-
-    cartitems = Cart.objects.filter(user=request.user).count()
+        product.quantity -= qty
+        product.save()
+    
+    cartitems = 0
+    if request.user.is_authenticated:
+        cartitems = Cart.objects.filter(user=request.user).count()
     products = Product.objects.filter(category=product.category)
     
     return render(request, 'core\index.html',{
@@ -111,11 +123,14 @@ def product(request, slug):
 @login_required(login_url='login')
 def productaddcart(request, slug):
     product = Product.objects.get(slug=slug)
+    if product.quantity == 0:
+        return redirect('home')
     cartitem, notcreated = Cart.objects.get_or_create(item=product, user=request.user)
     if notcreated == False:
         cartitem.quantity = cartitem.quantity + 1
     cartitem.save()
-
+    product.quantity -= 1
+    product.save()
     cartitems = Cart.objects.filter(user=request.user).count()
     products = Product.objects.filter(category=product.category)
     return render(request, 'core\index.html',{
@@ -130,14 +145,21 @@ def cart(request):
     products = Cart.objects.filter(user=request.user)
     if request.method == 'POST':
         for item in products:
+            product = Product.objects.get(slug=item.item.slug)
+            qty = 0
             if request.POST.get(item.item.slug):
                 if request.POST.get(item.item.slug) == '0':
+                    qty = -item.quantity
                     item.delete()
                 else:
-                    item.quantity = request.POST.get(item.item.slug)         
+                    qty = min(int(request.POST.get(item.item.slug))-item.quantity, product.quantity)
+                    item.quantity += qty
                     item.save()
             else:
+                qty = -item.quantity
                 item.delete()
+            product.quantity -= qty
+            product.save()
 
     products = Cart.objects.filter(user=request.user)
     cartitems = Cart.objects.filter(user=request.user).count()
@@ -321,6 +343,11 @@ def cancelorder(request):
         order = Order.objects.get(ref_code=request.POST.get("ref_code"))
         order.status = 'CANCELLED'
         order.save()
+        orderproducts = OrderProduct.objects.filter(order=order)
+        for item in orderproducts:
+            product = Product.objects.get(slug=item.item.slug)
+            product.quantity += item.quantity
+            product.save()
     else:
         return redirect("/order/")
     return redirect("/order/")

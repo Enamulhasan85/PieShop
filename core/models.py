@@ -27,8 +27,7 @@ GENDER = (
 )
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     fullname = models.CharField(max_length=400, blank=True)
     birthdate = models.DateField(null=True, blank=True)
     gender = models.CharField(choices=GENDER, max_length=20, default='M', blank=True, null=True)
@@ -38,11 +37,13 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
+
 
 class Product(models.Model):
     title = models.CharField(max_length=100)
@@ -52,6 +53,7 @@ class Product(models.Model):
     slug = models.SlugField()
     description = models.TextField()
     image = models.ImageField(upload_to='images')
+    quantity = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -172,9 +174,9 @@ class Address(models.Model):
 
 class Payment(models.Model):
     stripe_charge_id = models.CharField(max_length=50)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.SET_NULL, blank=True, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
     amount = models.FloatField()
     timestamp = models.DateTimeField()
+
     def __str__(self):
         return f'{self.user.username} - {self.timestamp.strftime("%Y-%m-%d %H:%M:%S")}'
