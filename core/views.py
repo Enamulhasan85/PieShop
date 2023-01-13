@@ -14,6 +14,24 @@ import random
 import string
 
 # Create your views here.
+def category_list():
+    categorylist = []
+    categorylist.append({
+        'menz': Category.objects.filter(gender='M')
+    })
+    categorylist.append({
+        'womens': Category.objects.filter(gender='F')
+    })
+    categorylist.append({
+        'kids': Category.objects.filter(gender='K')
+    })
+    categorylist.append({
+        'unisex': Category.objects.filter(gender='U')
+    })
+    
+    return categorylist
+
+
 def home(request):
     categorylist = []
     for category in Category.objects.all():
@@ -21,7 +39,7 @@ def home(request):
             continue
         categorylist.append({
             'category': category.name,
-            'products': Product.objects.filter(category=category)
+            'products': Product.objects.filter(category=category)[:3]
         })
     
     cartitems = 0
@@ -30,7 +48,20 @@ def home(request):
 
     return render(request, 'home\index.html',{
         'product': categorylist,
-        'cartitems': cartitems
+        'cartitems': cartitems,
+        'categories': category_list()
+    })
+
+
+def about(request):
+    cartitems = 0
+    if request.user.is_authenticated:
+        cartitems = Cart.objects.filter(user=request.user).count()
+
+    categorymenu = category_list()
+    return render(request, 'home/about.html',{
+        'cartitems': cartitems,
+        'categories': category_list()
     })
 
 
@@ -83,14 +114,31 @@ def registerpage(request):
 def addcart(request, slug):
     product = Product.objects.get(slug=slug)
     if product.quantity == 0:
-        return redirect('home')
+        return redirect(request.META['HTTP_REFERER'])
     cartitem, notcreated = Cart.objects.get_or_create(item=product, user=request.user)
     if notcreated == False: 
         cartitem.quantity = cartitem.quantity + 1
     cartitem.save()
     product.quantity -= 1
+    product.sold += 1
     product.save()
-    return redirect("home")
+    return redirect(request.META['HTTP_REFERER'])
+
+
+def productsearch(request, id):
+    category = Category.objects.get(id=id)
+    products = Product.objects.filter(category=category)
+
+    cartitems = 0
+    if request.user.is_authenticated:
+        cartitems = Cart.objects.filter(user=request.user).count()
+
+    return render(request, 'core\product.html',{
+        'category': category,
+        'cartitems': cartitems,
+        'product': products,
+        'categories': category_list()
+    })
 
 
 def product(request, slug):
@@ -106,18 +154,55 @@ def product(request, slug):
             cartitem.quantity = qty
         cartitem.save()
         product.quantity -= qty
+        product.sold += qty
         product.save()
     
+    reviews = Review.objects.filter(item=product)[:3]
+    if request.user.is_authenticated == True:
+        isreviewed = Review.objects.filter(item=product).filter(user=request.user).count()
+    else:
+        isreviewed = 1
+    reveiwnumber =  max(Review.objects.filter(item=product).count(), 0)
+
     cartitems = 0
     if request.user.is_authenticated:
         cartitems = Cart.objects.filter(user=request.user).count()
-    products = Product.objects.filter(category=product.category)
+    products = Product.objects.filter(category=product.category)[:4]
     
     return render(request, 'core\index.html',{
         'product': product,
         'cartitems': cartitems,
-        'products': products
+        'products': products,
+        'categories': category_list(),
+        'reviews': reviews,
+        'reviewnumber': reveiwnumber,
+        'isreviewed': isreviewed
     })
+
+
+@login_required(login_url='login')
+def createreview(request, slug):
+    product = Product.objects.get(slug=slug)
+
+    review = Review()
+    review.user = request.user
+    review.item = product
+    review.reviewtext = request.POST.get("review")
+    review.rating = request.POST.get("ratings")
+    review.save()
+
+    product.rating = (product.rating + float(request.POST.get("ratings"))) / 2
+    product.save()
+
+    # cartitems = 0
+    # if request.user.is_authenticated:
+    #     cartitems = Cart.objects.filter(user=request.user).count()
+    # products = Product.objects.filter(category=product.category)
+
+    # reviews = Review.objects.filter(item=product)
+    # isreviewed = Review.objects.filter(item=product).filter(user=request.user).count()
+
+    return redirect("product", slug=slug)
 
 
 @login_required(login_url='login')
@@ -130,13 +215,15 @@ def productaddcart(request, slug):
         cartitem.quantity = cartitem.quantity + 1
     cartitem.save()
     product.quantity -= 1
+    product.sold += 1
     product.save()
     cartitems = Cart.objects.filter(user=request.user).count()
     products = Product.objects.filter(category=product.category)
     return render(request, 'core\index.html',{
         'product': product,
         'cartitems': cartitems,
-        'products': products
+        'products': products,
+        'categories': category_list()
     })
 
 
@@ -159,6 +246,7 @@ def cart(request):
                 qty = -item.quantity
                 item.delete()
             product.quantity -= qty
+            product.sold += qty
             product.save()
 
     products = Cart.objects.filter(user=request.user)
@@ -170,7 +258,8 @@ def cart(request):
         'products': products,
         'cartitems': cartitems,
         'totalprice': total,
-        'total': total+50
+        'total': total+50,
+        'categories': category_list()
     })
 
 
@@ -229,7 +318,8 @@ def shipping(request):
         'cartitems': cartitems,
         'totalprice': total,
         'total': total+50,
-        'addresses': addresses
+        'addresses': addresses,
+        'categories': category_list()
     })
 
 
@@ -271,7 +361,8 @@ def profile(request):
         'date':birthdate,
         'user': request.user,
         'cartitems': cartitems,
-        'addresses': addresses
+        'addresses': addresses,
+        'categories': category_list()
     })
 
 
@@ -316,6 +407,7 @@ def order(request):
         'ordercount': ordercount,
         'orders': orderlist,
         'cartitems': cartitems,
+        'categories': category_list()
     })
 
 
@@ -334,6 +426,7 @@ def trackorder(request, ref_code):
         'totalprice': payment-50,
         'total': payment,
         'cartitems': cartitems,
+        'categories': category_list()
     })
 
 
@@ -347,6 +440,7 @@ def cancelorder(request):
         for item in orderproducts:
             product = Product.objects.get(slug=item.item.slug)
             product.quantity += item.quantity
+            product.sold -= item.quantity
             product.save()
     else:
         return redirect("/order/")

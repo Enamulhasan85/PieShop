@@ -26,6 +26,13 @@ GENDER = (
     ('F', 'Female'),
 )
 
+GenderwiseCategory = (
+    ('M', 'Male'),
+    ('F', 'Female'),
+    ('K', 'Kid'),
+    ('U', 'Unisex')
+)
+
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     fullname = models.CharField(max_length=400, blank=True)
@@ -40,6 +47,7 @@ class UserProfile(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
+    gender = models.CharField(choices=GenderwiseCategory, max_length=20, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -47,13 +55,17 @@ class Category(models.Model):
 
 class Product(models.Model):
     title = models.CharField(max_length=100)
+    productcode = models.CharField(max_length=100)
     price = models.FloatField()
     discount_price = models.FloatField(blank=True, null=True)
+    rating = models.FloatField(default=0, blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     slug = models.SlugField()
     description = models.TextField()
     image = models.ImageField(upload_to='images')
     quantity = models.IntegerField(default=0)
+    entrydate = models.DateField(null=True, blank=True)
+    sold = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -72,6 +84,15 @@ class Product(models.Model):
         return reverse("core:remove-from-cart", kwargs={
             'slug': self.slug
         })
+
+    
+class Review(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+    item = models.ForeignKey(Product, on_delete=models.CASCADE)
+    rating = models.FloatField(null=True, blank=True)
+    reviewtext = models.CharField(max_length=400, blank=True)
+    
 
 
 class Cart(models.Model):

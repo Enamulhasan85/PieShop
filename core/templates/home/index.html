@@ -14,9 +14,11 @@
     background: url(../static/core/images/bg.jpg) no-repeat center center; background-size: cover;
     padding-top: 4rem; padding-bottom: 4rem;">
         <div class="col-9 col-sm-6 px-4 py-3 px-lg-5 my-5 mx-auto" style="background-color: #00706bcf;">
-            <div class="text-center text-white">
-                <h1 class="display-4 fw-bolder">Shop in PieShop</h1>
-                <p class="lead fs-4 fw-normal mb-0">Largest online books & stationary items store</p>
+            <div class="text-center text-white" style="font-family: '"Source Sans Pro",HelveticaNeue-Light,"Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;'>
+                <!-- <h1 class="display-4 fw-bolder">Shop in PieShop</h1> -->
+                <!-- <p class="lead fs-4 fw-normal mb-0">Largest online books & stationary items store</p> -->
+                <h1 class="display-4 fw-bolder">PieShop</h1>
+                <p class="lead fs-4 fw-normal mb-0">Stop Selling, Start Helping</p>
             </div>
         </div>
     </header>
@@ -29,13 +31,18 @@
             <h3 class="border-start border-2 border-dark px-2 my-4">{{ list.category }}</h3>
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 {% for item in list.products %}
-                    <div class="col-sm-3 col-md-4 mb-4">
+                    <div class="col-sm-3 col-md-3 mb-4">
                         <div class="card h-100">
                             <!-- Sale badge--> 
                             {% if item.quantity == 0 %}
-                                <div class="badge bg-danger position-absolute" style="top: 0.5rem; right: 0.5rem">Out of Stock</div>
+                                <div class="badge bg-danger position-absolute" style="top: 0.5rem; right: 0.5rem;">Out of Stock</div>
+                            {% elif 5 >= item.quantity %}
+                                <div class="badge bg-warning text-dark position-absolute" style="top: 0.5rem; right: 0.5rem">Low Stock</div>
+                                {% if item.discount_price %}
+                                    <div class="badge bg-success position-absolute" style="top: 2rem; right: 0.5rem">Discount</div>
+                                {% endif %}
                             {% elif item.discount_price %}
-                                <div class="badge bg-warning text-dark position-absolute" style="top: 0.5rem; right: 0.5rem">Discount</div>
+                                <div class="badge bg-warning  position-absolute" style="top: 0.5rem; right: 0.5rem">Discount</div>
                             {% endif %}                            <!-- Product image-->
                             <img class="card-img-top" src="{{ item.image.url }}" alt="{{item.title}}" height="180px"/>
                             <!-- Product details-->
@@ -45,18 +52,28 @@
                                     <h5 class="fw-bolder">{{item.title}}</h5>
                                     <!-- Product reviews-->
                                     <div class="d-flex justify-content-center small text-warning mb-2">
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
+                                        {% if 1.00 <= item.rating %}
+                                            <i class="bi-star-fill"></i>
+                                        {% endif %}
+                                        {% if 2.00 <= item.rating %}
+                                            <i class="bi-star-fill"></i>
+                                        {% endif %}
+                                        {% if 3.00 <= item.rating %}
+                                            <i class="bi-star-fill"></i>
+                                        {% endif %}
+                                        {% if 4.00 <= item.rating %}
+                                            <i class="bi-star-fill"></i>
+                                        {% endif %}
+                                        {% if 5.00 <= item.rating %}
+                                            <i class="bi-star-fill"></i>
+                                        {% endif %}
                                     </div>
                                     <!-- Product price-->
                                     {% if item.discount_price %}
-                                        <span class="text-muted text-decoration-line-through">${{item.price}}</span>
-                                        ${{item.discount_price}}
+                                        <span class="text-muted text-decoration-line-through">৳{{item.price}}</span>
+                                        ৳{{item.discount_price}}
                                     {% else %}
-                                        ${{item.price}}
+                                        ৳{{item.price}}
                                     {% endif %}
                                 </div>
                             </div>

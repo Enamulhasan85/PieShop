@@ -14,34 +14,179 @@
         <div class="row gx-4 gx-lg-5 align-items-center">
             <div class="col-md-6"><img class="card-img-top ms-auto d-flex mb-5 mb-md-0" src="{{product.image.url}}" alt="{{product.title}}" style="height: 345px; width: 415px;"/></div>
             <div class="col-md-6">
-                <div class="small mb-1">SKU: BST-498</div>
-                <h1 class="display-5 fw-bolder">{{product.title}}</h1>
-                <div class="fs-5 mb-3">
-                    {% if product.discount_price %}
-                        <span class="text-decoration-line-through">${{product.price}}</span>
-                        <span>${{product.discount_price}}</span>
-                    {% else %}
-                        <span>${{product.price}}</span>
+                <div class="small mb-1">
+                    SKU: {{product.productcode}}
+                    {% if product.quantity == 0 %}
+                        <span class="badge bg-danger">Out of Stock</span>
+                    {% elif 5 >= product.quantity %}
+                        <span class="badge bg-warning text-dark">Low Stock</span>
                     {% endif %}
                 </div>
+                <h1 class="display-5 fw-bolder">{{product.title}}</h1>
+                <div class="fs-5">
+                    {% if product.discount_price %}
+                        <span class="text-decoration-line-through">৳{{product.price}}</span>
+                        <span>৳{{product.discount_price}}</span>
+                    {% else %}
+                        <span>৳{{product.price}}</span>
+                    {% endif %}
+                </div>
+                <p class="badge text-dark mb-1 p-0">Ratings: {{product.rating|floatformat:2}} <i class="bi-star-fill text-warning"></i> / {{reviewnumber}} reviews</p>
                 <p class="lead">{{product.description}}</p>
                 <form class="" action="{% url 'product' product.slug %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="d-flex">
-                        <input class="form-control text-center me-3" name="quantity" id="inputQuantity" type="number" value="1" min="1" style="max-width: 4rem" />
-                        <button class="btn btn-outline-dark flex-shrink-0" type="submit">
-                            <i class="bi-cart-fill me-1"></i>
-                            Add to cart
-                        </button>
+                        {% if product.quantity == 0 %}
+                            <input class="form-control text-center me-3" disabled name="quantity" id="inputQuantity" type="number" value="1" min="1" style="max-width: 4rem" />
+                            <button class="btn btn-outline-dark disabled flex-shrink-0" type="submit">
+                                <i class="bi-cart-fill me-1"></i>
+                                Add to cart
+                            </button>
+                        {% else %}
+                            <input class="form-control text-center me-3" name="quantity" id="inputQuantity" type="number" value="1" min="1" style="max-width: 4rem" />
+                            <button class="btn btn-outline-dark flex-shrink-0" type="submit">
+                                <i class="bi-cart-fill me-1"></i>
+                                Add to cart
+                            </button>
+                        {% endif %}
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </section>
+<section class="py-4 bg-secondary">
+    <h2 class="px-4 fw-bolder mb-3 text-white">Reviews : ({{reviewnumber}})</h2>
+    <div class="d-flex ">
+    <div class="col-sm-8 px-4">
+        <div class="row g-2">
+            <!-- <div class="col-md-4 px-3">
+                <div class="card p-3 text-center px-4">
+                    <div class="user-image">
+                        <img src="https://i.imgur.com/PKHvlRS.jpg" class="rounded-circle" width="80">
+                    </div>
+                    
+                    <div class="user-content">
+                        <h5 class="mb-0">Bruce Hardy</h5>
+                        <span>Software Developer</span>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    </div>
+                    
+                    <div class="ratings">
+                        <i class="bi-star-fill"></i>
+                        <i class="bi-star-fill"></i>
+                        <i class="bi-star-fill"></i>
+                        <i class="bi-star-fill"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card p-3 text-center px-4">
+                    <div class="user-image">
+                        <img src="https://i.imgur.com/w2CKRB9.jpg" class="rounded-circle" width="80">
+                    </div>
+                    
+                    <div class="user-content">
+                        <h5 class="mb-0">Mark Smith</h5>
+                        <span>Web Developer</span>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    </div>
+                    
+                    <div class="ratings">
+                        <i class="bi-star-fill"></i>
+                        <i class="bi-star-fill"></i>
+                        <i class="bi-star-fill"></i>
+                        <i class="bi-star-fill"></i>
+                        <i class="bi-star-fill"></i>
+                    </div>
+                </div>
+            </div> -->
+            {% for review in reviews %}
+                <div class="col-md-4">
+                    {% if review.user == user %}
+                    <div class="card p-3 bg-warning text-center px-4">
+                    {% else %}
+                    <div class="card p-3 text-center px-4">
+                    {% endif %}
+                        <div class="user-image">
+                            <img src="/files/images/profile.png" class="rounded-circle" width="80">
+                        </div>
+                        <div class="user-content p-2">
+                            <h5 class="mb-2">{{review.user}}</h5>
+                            <p style="height: 90px;">{{review.reviewtext}}</p>
+                        </div>
+
+                        {% if review.user == user %}
+                        <div class="ratings text-dark">
+                        {% else %}
+                        <div class="ratings text-warning">
+                        {% endif %}
+                            {% if 1.00 <= review.rating %}
+                                <i class="bi-star-fill"></i>
+                            {% endif %}
+                            {% if 2.00 <= review.rating %}
+                                <i class="bi-star-fill"></i>
+                            {% endif %}
+                            {% if 3.00 <= review.rating %}
+                                <i class="bi-star-fill"></i>
+                            {% endif %}
+                            {% if 4.00 <= review.rating %}
+                                <i class="bi-star-fill"></i>
+                            {% endif %}
+                            {% if 5.00 <= review.rating %}
+                                <i class="bi-star-fill"></i>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-sm-4 px-3">
+        {% if isreviewed == 0 %}
+            <form class="" action="{% url 'CreateReview' product.slug %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+        {% endif %}
+            <div class="card p-3 text-center px-4">
+                <div class="text-secondary"><h4 class="text-center">Give Your Review</h4></div>
+                <hr class="mt-0"/>
+                    <div class="d-flex mb-3">
+                        <span class="m-1">Rate us: </span>
+                        <fieldset class="rating mx-2" style="font-size: 7px;">
+                            <input type="radio" id="star5" name="rating" value="5"><label class="full" for="star5" title="Awesome - 5 stars"></label>
+                            <input type="radio" id="star4half" name="rating" value="4.5"><label class="half" for="star4half" title="Pretty good - 4.5 stars"></label>
+                            <input type="radio" id="star4" name="rating" value="4"><label class="full" for="star4" title="Pretty good - 4 stars"></label>
+                            <input type="radio" id="star3half" name="rating" value="3.5"><label class="half" for="star3half" title="Meh - 3.5 stars"></label>
+                            <input type="radio" id="star3" name="rating" value="3"><label class="full" for="star3" title="Meh - 3 stars"></label>
+                            <input type="radio" id="star2half" name="rating" value="2.5"><label class="half" for="star2half" title="Kinda bad - 2.5 stars"></label>
+                            <input type="radio" id="star2" name="rating" value="2"><label class="full" for="star2" title="Kinda bad - 2 stars"></label>
+                            <input type="radio" id="star1half" name="rating" value="1.5"><label class="half" for="star1half" title="Meh - 1.5 stars"></label>
+                            <input type="radio" id="star1" name="rating" value="1"><label class="full" for="star1" title="Sucks big time - 1 star"></label>
+                            <input type="radio" id="starhalf" name="rating" value="0.5"><label class="half" for="starhalf" title="Sucks big time - 0.5 stars"></label>
+                            <input type="radio" class="reset-option" name="rating" value="reset">
+                        </fieldset>
+                        <span class="myratings text-dark fs-6 my-1">0.0 </span><i class="bi-star-fill m-1"></i>
+                        <input name="ratings" id="ratings" step=0.01 class="form-control" hidden type="number" value=""/>
+                    </div>
+                    <div class="form-floating">
+                        <textarea class="form-control" name="review" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
+                        <label for="floatingTextarea2">Comments</label>
+                    </div>
+                    {% if isreviewed == 0 %}
+                        <button class="btn btn-primary w-100 mt-3" type="submit">Submit</button>
+                    {% else %}
+                        <button class="btn btn-primary w-100 mt-3 disabled" type="submit">Submit</button>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+    </div>
+</section>
 <!-- Related items section-->
 <section class="py-5 bg-light">
-    <div class="container px-4 px-lg-5 mt-5">
+    <div class="container">
         <h2 class="fw-bolder mb-4">Related products</h2>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
             {% for item in products %}
@@ -50,8 +195,13 @@
                         <!-- Sale badge-->
                         {% if item.quantity == 0 %}
                             <div class="badge bg-danger position-absolute" style="top: 0.5rem; right: 0.5rem">Out of Stock</div>
+                        {% elif 5 >= item.quantity %}
+                            <div class="badge bg-warning text-dark position-absolute" style="top: 0.5rem; right: 0.5rem">Low Stock</div>
+                            {% if item.discount_price %}
+                                <div class="badge bg-success position-absolute" style="top: 2rem; right: 0.5rem">Discount</div>
+                            {% endif %}
                         {% elif item.discount_price %}
-                            <div class="badge bg-warning text-dark position-absolute" style="top: 0.5rem; right: 0.5rem">Discount</div>
+                            <div class="badge bg-success position-absolute" style="top: 0.5rem; right: 0.5rem">Discount</div>
                         {% endif %}                           <!-- Product image-->
                         <img class="card-img-top" src="{{ item.image.url }}" alt="{{item.title}}" height="180px"/>
                         <!-- Product details-->
@@ -61,18 +211,28 @@
                                 <h5 class="fw-bolder">{{item.title}}</h5>
                                  <!-- Product reviews-->
                                  <div class="d-flex justify-content-center small text-warning mb-2">
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
+                                    {% if 1.00 <= item.rating %}
+                                        <i class="bi-star-fill"></i>
+                                    {% endif %}
+                                    {% if 2.00 <= item.rating %}
+                                        <i class="bi-star-fill"></i>
+                                    {% endif %}
+                                    {% if 3.00 <= item.rating %}
+                                        <i class="bi-star-fill"></i>
+                                    {% endif %}
+                                    {% if 4.00 <= item.rating %}
+                                        <i class="bi-star-fill"></i>
+                                    {% endif %}
+                                    {% if 5.00 <= item.rating %}
+                                        <i class="bi-star-fill"></i>
+                                    {% endif %}
                                 </div>
                                 <!-- Product price-->
                                 {% if item.discount_price %}
-                                    <span class="text-muted text-decoration-line-through">${{item.price}}</span>
-                                    ${{item.discount_price}}
+                                    <span class="text-muted text-decoration-line-through">৳{{item.price}}</span>
+                                    ৳{{item.discount_price}}
                                 {% else %}
-                                    ${{item.price}}
+                                    ৳{{item.price}}
                                 {% endif %}
                             </div>
                         </div>
@@ -92,4 +252,39 @@
 
 {% endblock %}
 
-{% block site_js %}{% endblock %}
+{% block site_js %}
+<script>
+    $(document).ready(function(){
+        $("#ratings").val(Number(0));
+        $("input[type='radio']").click(function(){
+            var sim =  $("input[type='radio']:checked").val();
+            //alert(sim);
+            if (sim<3) {
+                $(".myratings").text(sim);
+            }
+            else{
+                $(".myratings").text(sim);
+            }
+            $("#ratings").val(Number(sim));
+            
+            console.log($("#ratings").val());
+        });
+    });
+
+    $("input[type='radio']").click(function(){
+        var sim =  $("input[type='radio']:checked").val();
+        //alert(sim);
+        if (sim<3) {
+            $(".myratings").text(sim);
+        }
+        else{
+            $(".myratings").text(sim);
+        }
+        $("#ratings").val(Number(sim));
+        
+        console.log($("#ratings").val());
+    });
+
+</script>
+
+{% endblock %}

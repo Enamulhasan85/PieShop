@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfile, Category, Product, Cart, Order, OrderProduct, Address, Payment
+from .models import UserProfile, Category, Product, Cart, Order, OrderProduct, Address, Payment, Review
 
 # Register your models here.
 
@@ -27,6 +27,9 @@ class AddressAdmin(admin.ModelAdmin):
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('user', 'amount', 'timestamp', )
 
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('user', 'reviewtext', 'rating', )
+
 admin.site.register(UserProfile, ProfileAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
@@ -35,3 +38,4 @@ admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderProduct, OrderProductAdmin)
 admin.site.register(Address, AddressAdmin)
 admin.site.register(Payment, PaymentAdmin)
+admin.site.register(Review, ReviewAdmin)

@@ -42,10 +42,10 @@
                             <span class="itemprice" hidden>{{item.item.price}}</span>
                             <span class="itemdiscount_price" hidden>{{item.item.discount_price}}</span>
                             {% if item.item.discount_price %}
-                                <div class="fw-bold">$<span class="discount_price">{{item.get_final_price}}</span></div>
-                                <div class="text-danger text-decoration-line-through">$<span class="price">{{item.get_total_item_price}}</span></div>
+                                <div class="fw-bold">৳<span class="discount_price">{{item.get_final_price}}</span></div>
+                                <div class="text-danger text-decoration-line-through">৳<span class="price">{{item.get_total_item_price}}</span></div>
                             {% else %}
-                                <div class="fw-bold">$<span class="price">{{item.get_final_price}}</span></div>
+                                <div class="fw-bold">৳<span class="price">{{item.get_final_price}}</span></div>
                                 <div class="fw-bold " hidden>0</div>
                             {% endif %}
                         </div>

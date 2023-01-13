@@ -73,10 +73,10 @@
                                                     <h5 class="">{{item.item.title}}</h5>
                                                     <!-- Product price-->
                                                     {% if item.item.discount_price %}
-                                                        <span class="text-muted text-decoration-line-through">${{item.item.price}}</span>
-                                                        ${{item.item.discount_price}}
+                                                        <span class="text-muted text-decoration-line-through">৳{{item.item.price}}</span>
+                                                        ৳{{item.item.discount_price}}
                                                     {% else %}
-                                                        ${{item.item.price}}
+                                                        ৳{{item.item.price}}
                                                     {% endif %}
                                                 </div>
                                             </div>
